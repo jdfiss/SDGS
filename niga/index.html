@@ -477,6 +477,151 @@
             z-index: 10;
             letter-spacing: 1px;
         }
+
+        /* ── Sources Modal ── */
+        #sources-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0,0,0,0.72);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        #sources-modal.active { display: flex; }
+        .sources-card {
+            background: #1a1a2e;
+            border: 1px solid rgba(249,157,38,0.2);
+            border-radius: 18px;
+            max-width: 780px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 40px 44px;
+            position: relative;
+            scrollbar-width: thin;
+            scrollbar-color: var(--orange) transparent;
+        }
+        .sources-card::-webkit-scrollbar { width: 5px; }
+        .sources-card::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 4px; }
+        .sources-close {
+            position: absolute;
+            top: 18px; right: 20px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: white;
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .sources-close:hover { background: rgba(255,255,255,0.2); }
+        .sources-title {
+            color: var(--orange);
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+        .sources-subtitle {
+            color: rgba(255,255,255,0.45);
+            font-size: 0.82rem;
+            margin-bottom: 28px;
+        }
+        .sources-section { margin-bottom: 28px; }
+        .sources-section-title {
+            color: rgba(249,157,38,0.85);
+            font-size: 0.72rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(249,157,38,0.2);
+            padding-bottom: 8px;
+            margin-bottom: 14px;
+        }
+        .source-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .source-row:last-child { border-bottom: none; }
+        .source-tag {
+            flex-shrink: 0;
+            background: rgba(249,157,38,0.12);
+            border: 1px solid rgba(249,157,38,0.3);
+            color: var(--orange);
+            font-size: 0.68rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            padding: 3px 9px;
+            border-radius: 12px;
+            margin-top: 2px;
+        }
+        .source-info { flex: 1; }
+        .source-name {
+            color: white;
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        .source-desc {
+            color: rgba(255,255,255,0.45);
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+        .source-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--orange);
+            font-size: 0.78rem;
+            text-decoration: none;
+            margin-top: 4px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .source-link:hover { opacity: 1; text-decoration: underline; }
+        .sources-note {
+            background: rgba(255,200,0,0.06);
+            border: 1px solid rgba(255,200,0,0.18);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-top: 4px;
+        }
+        .sources-note p {
+            color: rgba(255,255,255,0.55);
+            font-size: 0.8rem;
+            line-height: 1.7;
+        }
+        .note-icon { color: #f0c040; margin-right: 6px; }
+
+        /* ── Footer sources btn ── */
+        .footer-sources-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 16px;
+            padding: 8px 22px;
+            background: transparent;
+            border: 1px solid rgba(249,157,38,0.45);
+            color: var(--orange);
+            border-radius: 24px;
+            font-size: 0.82rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .footer-sources-btn:hover {
+            background: rgba(249,157,38,0.1);
+            border-color: var(--orange);
+        }
     </style>
 </head>
 <body>
@@ -799,7 +944,122 @@
            data-zh="資料來源：聯合國 · 世界銀行 · 台灣環保署 · C40 城市">
             Data sources: United Nations · World Bank · Taiwan EPA · C40 Cities
         </p>
+        <button class="footer-sources-btn" onclick="openSources()">
+            <span>&#128218;</span>
+            <span data-en="View Full References" data-zh="查看完整資料來源">View Full References</span>
+        </button>
     </footer>
+
+    <!-- Sources Modal -->
+    <div id="sources-modal">
+        <div class="sources-card">
+            <button class="sources-close" onclick="closeSources()">✕</button>
+            <div class="sources-title" data-en="DATA SOURCES & REFERENCES" data-zh="資料來源與參考文獻">DATA SOURCES & REFERENCES</div>
+            <div class="sources-subtitle" data-en="All statistics and claims used in this project, with original sources." data-zh="本專案所使用的所有統計數據與說明，含原始來源。">All statistics and claims used in this project, with original sources.</div>
+
+            <!-- Global -->
+            <div class="sources-section">
+                <div class="sources-section-title" data-en="Global Statistics" data-zh="全球統計數據">Global Statistics</div>
+
+                <div class="source-row">
+                    <span class="source-tag">UN</span>
+                    <div class="source-info">
+                        <div class="source-name" data-en="UN World Urbanization Prospects 2022" data-zh="聯合國世界城市化展望 2022">UN World Urbanization Prospects 2022</div>
+                        <div class="source-desc" data-en="56% of world's population lives in cities; projected 68% by 2050." data-zh="全球 56% 人口居住於都市；預計 2050 年達 68%。">56% of world's population lives in cities; projected 68% by 2050.</div>
+                        <a class="source-link" href="https://population.un.org/wup/" target="_blank">population.un.org/wup ↗</a>
+                    </div>
+                </div>
+
+                <div class="source-row">
+                    <span class="source-tag">UN</span>
+                    <div class="source-info">
+                        <div class="source-name" data-en="UN Sustainable Development Goal 11" data-zh="聯合國永續發展目標 11">UN Sustainable Development Goal 11</div>
+                        <div class="source-desc" data-en="Official SDG 11 targets: safe housing, sustainable transport, inclusive urbanization, heritage, disaster resilience, and environmental impact." data-zh="SDG 11 官方子目標：安全住房、永續交通、包容性都市化、文化遺產、防災韌性、環境影響。">Official SDG 11 targets 11.1–11.6.</div>
+                        <a class="source-link" href="https://sdgs.un.org/goals/goal11" target="_blank">sdgs.un.org/goals/goal11 ↗</a>
+                    </div>
+                </div>
+
+                <div class="source-row">
+                    <span class="source-tag">World Bank</span>
+                    <div class="source-info">
+                        <div class="source-name" data-en="World Bank — Urban Population (Taiwan)" data-zh="世界銀行 — 台灣都市人口">World Bank — Urban Population (Taiwan)</div>
+                        <div class="source-desc" data-en="Taiwan's urbanization rate: ~79% of population living in urban areas." data-zh="台灣都市化率：約 79% 人口居住於都市地區。">Taiwan's urbanization rate: ~79%.</div>
+                        <a class="source-link" href="https://data.worldbank.org/indicator/SP.URB.TOTL.IN.ZS?locations=TW" target="_blank">data.worldbank.org ↗</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Taiwan -->
+            <div class="sources-section">
+                <div class="sources-section-title" data-en="Taiwan Data" data-zh="台灣數據">Taiwan Data</div>
+
+                <div class="source-row">
+                    <span class="source-tag">EPA</span>
+                    <div class="source-info">
+                        <div class="source-name" data-en="Taiwan Environmental Protection Administration" data-zh="台灣環境部（環保署）">Taiwan Environmental Protection Administration</div>
+                        <div class="source-desc" data-en="Taiwan's national recycling rate (~55%); waste management statistics." data-zh="台灣全國資源回收率（約 55%）；廢棄物管理統計。">Taiwan's national recycling rate (~55%); waste management statistics.</div>
+                        <a class="source-link" href="https://www.moenv.gov.tw/" target="_blank">moenv.gov.tw ↗</a>
+                    </div>
+                </div>
+
+                <div class="source-row">
+                    <span class="source-tag">Taipei</span>
+                    <div class="source-info">
+                        <div class="source-name" data-en="Taipei City Environmental Protection Bureau" data-zh="台北市環境保護局">Taipei City Environmental Protection Bureau</div>
+                        <div class="source-desc" data-en="Pay-as-you-throw policy data: recycling rate 55%, household waste reduced by 67% since 2000." data-zh="垃圾費隨袋徵收政策數據：資源回收率 55%，家戶垃圾量自 2000 年減少 67%。">Pay-as-you-throw policy: recycling 55%, waste reduced 67% since 2000.</div>
+                        <a class="source-link" href="https://dep.gov.taipei/" target="_blank">dep.gov.taipei ↗</a>
+                    </div>
+                </div>
+
+                <div class="source-row">
+                    <span class="source-tag">MOEA</span>
+                    <div class="source-info">
+                        <div class="source-name" data-en="Ministry of Economic Affairs — Bureau of Energy" data-zh="經濟部能源署">Ministry of Economic Affairs — Bureau of Energy</div>
+                        <div class="source-desc" data-en="Tainan solar photovoltaic installed capacity — highest among Taiwan cities." data-zh="台南太陽光電裝置容量——全台各縣市最高。">Tainan solar PV capacity — highest in Taiwan.</div>
+                        <a class="source-link" href="https://www.moeaboe.gov.tw/" target="_blank">moeaboe.gov.tw ↗</a>
+                    </div>
+                </div>
+
+                <div class="source-row">
+                    <span class="source-tag">TSMC</span>
+                    <div class="source-info">
+                        <div class="source-name" data-en="TSMC Sustainability Report — RE100 Commitment" data-zh="台積電永續報告 — RE100 承諾">TSMC Sustainability Report — RE100 Commitment</div>
+                        <div class="source-desc" data-en="TSMC committed to 100% renewable energy by 2050 as an RE100 member." data-zh="台積電承諾 2050 年達成 100% 再生能源，為 RE100 成員。">TSMC committed to 100% renewable energy by 2050.</div>
+                        <a class="source-link" href="https://esg.tsmc.com/" target="_blank">esg.tsmc.com ↗</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- International -->
+            <div class="sources-section">
+                <div class="sources-section-title" data-en="International Cities" data-zh="國際城市">International Cities</div>
+
+                <div class="source-row">
+                    <span class="source-tag">C40</span>
+                    <div class="source-info">
+                        <div class="source-name" data-en="C40 Cities — Copenhagen" data-zh="C40 城市 — 哥本哈根">C40 Cities — Copenhagen</div>
+                        <div class="source-desc" data-en="Copenhagen's carbon neutrality target, 62% renewable energy, and 390 km cycling network." data-zh="哥本哈根碳中和目標、62% 再生能源與 390 公里自行車網絡。">Copenhagen's carbon neutrality target; 62% renewable; 390 km bike lanes.</div>
+                        <a class="source-link" href="https://www.c40.org/cities/copenhagen/" target="_blank">c40.org/cities/copenhagen ↗</a>
+                    </div>
+                </div>
+
+                <div class="source-row">
+                    <span class="source-tag">NParks</span>
+                    <div class="source-info">
+                        <div class="source-name" data-en="Singapore National Parks Board" data-zh="新加坡國家公園局">Singapore National Parks Board</div>
+                        <div class="source-desc" data-en="Singapore City in a Garden plan: 47% green coverage, 300+ parks." data-zh="新加坡花園城市計畫：47% 綠地覆蓋，300 座以上公園。">City in a Garden: 47% green coverage, 300+ parks.</div>
+                        <a class="source-link" href="https://www.nparks.gov.sg/" target="_blank">nparks.gov.sg ↗</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="sources-note">
+                <p><span class="note-icon">⚠</span><strong data-en="Note on city progress bar estimates:" data-zh="城市進度條估算說明：">Note on city progress bar estimates:</strong></p>
+                <p style="margin-top:6px;" data-en="The per-city percentages shown in the Taiwan City Focus section (Solar Energy, Public Transit, Green Coverage) are estimated figures compiled from multiple government reports and news sources. They are intended for comparative illustration and may not reflect a single official statistic. Copenhagen's carbon neutrality target is a stated goal; full achievement by 2025 has been acknowledged as delayed." data-zh="台灣城市焦點區塊各城市的百分比數值（太陽能普及率、大眾運輸使用率、綠地覆蓋率）為參考多份政府報告與新聞資料所整合的估算數字，用於比較說明，未必對應單一官方統計數據。哥本哈根碳中和為政策目標，2025 年全面達標已確認有所延遲。">The per-city percentages (Solar Energy, Public Transit, Green Coverage) are estimated figures for comparative illustration. Copenhagen's 2025 carbon neutrality is a stated goal; full achievement has been acknowledged as delayed.</p>
+            </div>
+        </div>
+    </div>
 
     <script>
         /* ── Canvas Particles ── */
@@ -945,7 +1205,7 @@
                     category: { en: 'Transport', zh: '交通' },
                     title:    { en: 'MRT & YouBike', zh: '捷運與 YouBike' },
                     text:     { en: 'You swipe your EasyCard and step into a spotless metro station. Taipei\'s MRT carries over 2 million passengers daily. Outside every exit, rows of orange YouBikes await — a seamless last-mile connection that has made car ownership feel unnecessary.', zh: '你刷悠遊卡踏入乾淨的捷運站。台北捷運每日載運逾 200 萬人次。每個出口外，橘色 YouBike 排列等候——無縫的最後一哩路，讓擁有汽車變得不再必要。' },
-                    photo:    'https://images.unsplash.com/photo-1568901640786-9eefd3ba05e5?w=1400&q=80&auto=format&fit=crop'
+                    photo:    'https://files.bonecollection.com/assets/shop/blog/2020/Youbike01.jpg'
                 },
                 {
                     category: { en: 'Environment', zh: '環境' },
@@ -957,7 +1217,7 @@
                     category: { en: 'Community', zh: '社區生活' },
                     title:    { en: 'Night Market Culture', zh: '夜市文化' },
                     text:     { en: 'Under a canopy of red lanterns, Shilin Night Market comes alive. Street vendors offer scallion pancakes, stinky tofu, and bubble tea. This is the heartbeat of Taipei\'s community life — vibrant, inclusive, and deeply human.', zh: '紅燈籠下，士林夜市活了起來。攤販提供蔥油餅、臭豆腐與珍珠奶茶。這是台北社區生活的心跳——充滿活力、包容且充滿人情味。' },
-                    photo:    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1400&q=80&auto=format&fit=crop'
+                    photo:    'https://bpb-us-e1.wpmucdn.com/sites.psu.edu/dist/3/28218/files/2016/03/KeelungNightMarket.jpg?bid=28218'
                 }
             ],
             kaohsiung: [
@@ -965,25 +1225,25 @@
                     category: { en: 'Overview', zh: '城市概覽' },
                     title:    { en: 'Welcome to Kaohsiung', zh: '歡迎來到高雄' },
                     text:     { en: 'Once Taiwan\'s heavy industrial heartland, Kaohsiung is reinventing itself. The harbor that powered Taiwan\'s economic miracle is transforming into a vibrant waterfront, and the city is pioneering green transit and renewable energy in southern Taiwan.', zh: '高雄曾是台灣重工業重鎮，如今正在重塑自己。推動台灣經濟奇蹟的港口正轉型為活躍的海岸線，城市在南台灣引領綠色交通與再生能源。' },
-                    photo:    'https://images.unsplash.com/photo-1480714378714-ef79b7f5ada4?w=1400&q=80&auto=format&fit=crop'
+                    photo:    'https://cdn-cw-english.cwg.tw/article/202407/article-668c98dd1e69e.jpg'
                 },
                 {
                     category: { en: 'Transport', zh: '交通' },
                     title:    { en: 'Light Rail Along the Harbor', zh: '港邊輕軌' },
                     text:     { en: 'You board the circular light rail as it curves along the harbor front. In 2015, Kaohsiung became the first city in Taiwan to operate a modern light rail — connecting the port district to cultural venues, parks, and the MRT network.', zh: '你登上沿著港灣延伸的環狀輕軌。2015 年，高雄成為台灣第一個啟用現代輕軌的城市——連接港區、文化場所、公園與捷運網絡。' },
-                    photo:    'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1400&q=80&auto=format&fit=crop'
+                    photo:    'https://scontent-tpe1-1.xx.fbcdn.net/v/t39.30808-6/518005034_1137561975064517_7571882880614650106_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=13d280&_nc_ohc=N6BGgiuIdZwQ7kNvwFfxM5c&_nc_oc=AdlPmW8VXtqtgAqoP-o3P1xmSvujx7g6zZyex_6vX6mBTkWcJyxC6LrWfkJeKSEeJA_gOXga8wnuabgRbt-hi2bF&_nc_zt=23&_nc_ht=scontent-tpe1-1.xx&_nc_gid=P0poIdZvLxNFk-gCsHN7pg&_nc_ss=8&oh=00_AfwZbkQ75H9-XU7fgAkM1Q_ezYaIQUo6oEyYB1YgPEAgFA&oe=69BDA588'
                 },
                 {
                     category: { en: 'Waterfront', zh: '水岸再生' },
                     title:    { en: 'Love River Reborn', zh: '愛河重生' },
                     text:     { en: 'You stroll along the banks of the Love River as the sun sets. Once heavily polluted, the river was restored through a 20-year ecological project. Today it is a beloved promenade lined with cafes, art installations, and evening markets.', zh: '你在夕陽中沿愛河散步，高雄天際線盡收眼底。曾嚴重污染的河流歷經 20 年生態復育計畫。如今成為深受喜愛的散步道，兩岸有咖啡館、裝置藝術與夜間市集。' },
-                    photo:    'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1400&q=80&auto=format&fit=crop'
+                    photo:    'https://khh.travel/image/37514/1920x1080/'
                 },
                 {
                     category: { en: 'Energy', zh: '能源轉型' },
                     title:    { en: 'From Steel to Solar', zh: '從鋼鐵到太陽能' },
                     text:     { en: 'The old factory smokestacks have given way to solar panel arrays. Kaohsiung leads southern Taiwan in renewable energy adoption, with solar installations on industrial rooftops and government buildings transforming the city\'s energy future.', zh: '舊工廠的煙囪已讓位給太陽能板陣列。高雄引領南台灣再生能源採用，工業廠房與政府建築的太陽能裝置正在轉變城市的能源未來。' },
-                    photo:    'https://images.unsplash.com/photo-1509391366360-9ad878fdfd78?w=1400&q=80&auto=format&fit=crop'
+                    photo:    'https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                 }
             ],
             taichung: [
@@ -991,25 +1251,25 @@
                     category: { en: 'Overview', zh: '城市概覽' },
                     title:    { en: 'Welcome to Taichung', zh: '歡迎來到台中' },
                     text:     { en: 'Taiwan\'s fastest-growing city has surpassed Taipei in population and is racing toward a greener future. Sitting in central Taiwan, it bridges north and south — a cultural hub, a food paradise, and an emerging smart city.', zh: '台灣成長最快的城市，人口已超越台北，正快速朝向更綠色的未來前進。位於台灣中部，串聯南北——文化重鎮、美食天堂與新興智慧城市。' },
-                    photo:    'https://images.unsplash.com/photo-1480714378714-ef79b7f5ada4?w=1400&q=80&auto=format&fit=crop&crop=left'
+                    photo:    'https://images.unsplash.com/photo-1657724738971-0caa65a15661?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                 },
                 {
                     category: { en: 'Green Space', zh: '綠色空間' },
                     title:    { en: 'Central Park Greenway', zh: '中央公園綠廊' },
                     text:     { en: 'You walk down a 5.7-kilometer green corridor cutting through the heart of the city. Taichung\'s Central Park greenway is a living lung — shaded walking paths, cycling lanes, water features, and pocket parks woven into the urban fabric.', zh: '你走在一條穿越城市心臟的 5.7 公里綠廊。台中中央公園綠廊是城市之肺——遮蔭步道、自行車道、水景與口袋公園交織於都市結構之中。' },
-                    photo:    'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1400&q=80&auto=format&fit=crop&crop=bottom'
+                    photo:    'https://cpark.taichung.gov.tw/files/02.jpg'
                 },
                 {
                     category: { en: 'Culture', zh: '文化' },
                     title:    { en: 'Architecture Meets Nature', zh: '建築與自然交融' },
                     text:     { en: 'The sweeping white curves of the National Taichung Theater — designed by Toyo Ito — emerge from a plaza of trees and water. Taichung has invested in world-class cultural architecture that harmonizes with sustainable urban design.', zh: '伊東豊雄設計的台中國家歌劇院白色弧線從樹木與水景廣場中浮現。台中大力投資世界級文化建築，與永續都市設計和諧共存。' },
-                    photo:    'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=1400&q=80&auto=format&fit=crop'
+                    photo:    'https://ialive.bwnet.com.tw/gallery/GARY000011668.jpg'
                 },
                 {
                     category: { en: 'Transport', zh: '交通' },
                     title:    { en: 'Smart Bus & Cycling City', zh: '智慧公車與自行車城市' },
                     text:     { en: 'Real-time displays at every bus stop show arrival times to the minute. Taichung\'s BRT-inspired transit corridors move thousands daily, while an expanding YouBike network nudges residents away from scooters and toward cleaner mobility.', zh: '每個公車站的即時看板精確顯示到站時間。台中 BRT 式交通走廊每日載運大量乘客，擴建中的 YouBike 網絡正引導居民離開機車、轉向更乾淨的移動方式。' },
-                    photo:    'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1400&q=80&auto=format&fit=crop'
+                    photo:    'https://upload.wikimedia.org/wikipedia/commons/5/57/%E8%87%BA%E4%B8%AD%E5%B8%82%E9%9B%99%E7%AF%80%E5%B7%B4%E5%A3%AB%28%E8%BB%8A%E8%99%9F755-U5%29.jpg'
                 }
             ],
             tainan: [
@@ -1017,25 +1277,25 @@
                     category: { en: 'Overview', zh: '城市概覽' },
                     title:    { en: 'Welcome to Tainan', zh: '歡迎來到台南' },
                     text:     { en: 'Taiwan\'s oldest city breathes history with every cobblestone. Founded over 400 years ago as the island\'s first capital, Tainan is where Dutch forts, Qing dynasty temples, and Japanese colonial buildings coexist with solar farms and modern sustainability.', zh: '台灣最古老的城市，每一塊鵝卵石都呼吸著歷史。四百多年前作為全島第一個首府建立，台南融合荷蘭古堡、清朝廟宇、日式殖民建築與太陽能農場和現代永續計畫。' },
-                    photo:    'https://images.unsplash.com/photo-1470004914212-05527e49370b?w=1400&q=80&auto=format&fit=crop&crop=right'
+                    photo:    'https://images.unsplash.com/photo-1650039635890-e9f79cb10e38?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                 },
                 {
                     category: { en: 'Solar Energy', zh: '太陽能' },
                     title:    { en: 'Sun Capital of Taiwan', zh: '台灣太陽能首都' },
                     text:     { en: 'Tainan basks in more sunlight than any other major city in Taiwan. Expansive solar farms have been installed on agricultural land, factory rooftops, and even above fish ponds — giving Tainan the highest solar panel capacity in all of Taiwan.', zh: '台南享有比其他主要城市更充裕的日照。太陽能農場遍布農業用地、工廠屋頂，甚至漁塭上方——使台南擁有全台最高的太陽能裝置容量。' },
-                    photo:    'https://images.unsplash.com/photo-1509391366360-9ad878fdfd78?w=1400&q=80&auto=format&fit=crop&crop=top'
+                    photo:    'https://images.unsplash.com/photo-1624397640148-949b1732bb0a?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                 },
                 {
                     category: { en: 'Heritage', zh: '文化遺產' },
                     title:    { en: 'Living History', zh: '活著的歷史' },
                     text:     { en: 'You walk through the red gate of Chihkan Tower, built by the Dutch in 1653. Tainan\'s old streets are a living museum — historic lanes filled with century-old temples, traditional snack vendors, and restored Japanese shophouses, all preserved for future generations.', zh: '你穿過 1653 年荷蘭人建造的赤崁樓紅色城門。台南老街是活著的博物館——歷史小巷充滿百年廟宇、傳統小吃攤與修復的日式商店，全為後代子孫精心保存。' },
-                    photo:    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80&auto=format&fit=crop'
+                    photo:    'https://data.boch.gov.tw/upload/representImageFile/2022-04-27/6cabc42c-b640-4089-9d02-b335bd7769f2/%E8%B5%A4%E5%B5%8C%E6%A8%93.jpg'
                 },
                 {
                     category: { en: 'Cycling', zh: '自行車' },
                     title:    { en: 'Riding Through History', zh: '騎車穿越歷史' },
                     text:     { en: 'A YouBike carries you through narrow historic lanes too small for cars. Tainan\'s cycling infrastructure weaves between ancient temples and colonial-era buildings. The city\'s flat terrain and warm climate make cycling a natural choice.', zh: 'YouBike 帶你穿越窄小的歷史巷弄，那裡容不下汽車。台南的自行車基礎設施穿梭於古廟與殖民時期建築之間。平坦地形與溫暖氣候使騎車成為自然選擇。' },
-                    photo:    'https://images.unsplash.com/photo-1488739620652-da7f6f22bae4?w=1400&q=80&auto=format&fit=crop'
+                    photo:    'https://images.unsplash.com/photo-1697710024834-0772a8b1d778?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                 }
             ],
             hsinchu: [
@@ -1049,7 +1309,7 @@
                     category: { en: 'Smart City', zh: '智慧城市' },
                     title:    { en: 'IoT Meets Urban Life', zh: '物聯網融入城市生活' },
                     text:     { en: 'Sensors embedded in lampposts, intersections, and public spaces feed real-time data to Hsinchu\'s city management center. Traffic signals adapt dynamically, air quality alerts reach residents\' phones, and energy across public buildings is optimized automatically.', zh: '嵌入路燈、路口與公共空間的感測器將即時數據傳送至新竹市政管理中心。交通號誌動態調整，空氣品質警示推播至市民手機，公共建築能源自動優化。' },
-                    photo:    'https://images.unsplash.com/photo-1480714378714-ef79b7f5ada4?w=1400&q=80&auto=format&fit=crop&crop=top'
+                    photo:    'images/新竹2.png'
                 },
                 {
                     category: { en: 'Green Energy', zh: '綠色能源' },
@@ -1061,7 +1321,7 @@
                     category: { en: 'Heritage', zh: '古城魅力' },
                     title:    { en: 'The Old City Walls', zh: '古城牆' },
                     text:     { en: 'Beyond the glass towers of the science park, the ancient city walls of Hsinchu still stand. Built in 1827, the East Gate and old city are a counterpoint to the relentless modernity next door — a reminder that sustainable communities honor their past.', zh: '科學園區的玻璃大樓之外，新竹古城牆依然屹立。建於 1827 年的東門與周邊舊城是緊鄰現代化的對比——提醒我們永續社區應尊重自己的過去。' },
-                    photo:    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=1400&q=80&auto=format&fit=crop&crop=right'
+                    photo:    'https://g.udn.com.tw/upfiles/B_KE/Kevin218/PSN_PHOTO/302/f_28175302_1.JPG'
                 }
             ]
         };
@@ -1144,10 +1404,26 @@
 
         // Keyboard nav
         document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                if (document.getElementById('scene-modal').classList.contains('active')) closeScene();
+                if (document.getElementById('sources-modal').classList.contains('active')) closeSources();
+            }
             if (!document.getElementById('scene-modal').classList.contains('active')) return;
             if (e.key === 'ArrowRight') changeScene(1);
             if (e.key === 'ArrowLeft')  changeScene(-1);
-            if (e.key === 'Escape')     closeScene();
+        });
+
+        /* ── Sources Modal ── */
+        function openSources() {
+            document.getElementById('sources-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSources() {
+            document.getElementById('sources-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        document.getElementById('sources-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeSources();
         });
 
         /* ── Language Toggle ── */
