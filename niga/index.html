@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDG 11 — Sustainable Cities</title>
+    <style>
+        :root {
+            --orange: #f99d26;
+            --dark-orange: #e07b00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; color: #333; overflow-x: hidden; }
+
+        /* ── Nav ── */
+        nav {
+            background: rgba(249, 157, 38, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 14px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+        nav .logo { font-size: 1.3rem; font-weight: bold; color: white; letter-spacing: 1px; }
+        nav .nav-right { display: flex; align-items: center; gap: 24px; }
+        nav ul { list-style: none; display: flex; gap: 24px; }
+        nav ul li a { color: white; text-decoration: none; font-size: 0.95rem; transition: opacity 0.2s; }
+        nav ul li a:hover { opacity: 0.65; }
+        .lang-btn {
+            background: white;
+            color: var(--orange);
+            border: none;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .lang-btn:hover { transform: scale(1.07); }
+
+        /* ── Hero ── */
+        #hero {
+            position: relative;
+            background: linear-gradient(150deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            text-align: center;
+            padding: 130px 20px 110px;
+            overflow: hidden;
+        }
+        #particle-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+        }
+        .hero-content { position: relative; z-index: 1; }
+        .sdg-badge {
+            display: inline-block;
+            font-size: 3.2rem;
+            font-weight: 900;
+            color: var(--orange);
+            background: rgba(249,157,38,0.12);
+            border: 2px solid rgba(249,157,38,0.4);
+            backdrop-filter: blur(8px);
+            padding: 14px 40px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+            letter-spacing: 2px;
+        }
+        #hero h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            margin-bottom: 22px;
+        }
+        #hero p {
+            font-size: 1.15rem;
+            opacity: 0.82;
+            margin: 0 auto 40px;
+            line-height: 1.75;
+            white-space: nowrap;
+        }
+        .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .hero-btns a {
+            padding: 14px 32px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary {
+            background: var(--orange);
+            color: white;
+            box-shadow: 0 4px 24px rgba(249,157,38,0.45);
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(249,157,38,0.6); }
+        .btn-ghost {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.25);
+            backdrop-filter: blur(6px);
+        }
+        .btn-ghost:hover { transform: translateY(-3px); background: rgba(255,255,255,0.2); }
+        .scroll-arrow { margin-top: 56px; font-size: 1.4rem; opacity: 0.5; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(9px)} }
+
+        /* ── Scroll animations ── */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(36px);
+            transition: opacity 0.65s ease, transform 0.65s ease;
+        }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+        /* ── Section base ── */
+        section { padding: 90px 40px; }
+        section h2 {
+            font-size: 2rem;
+            margin-bottom: 54px;
+            text-align: center;
+            color: var(--dark-orange);
+        }
+        section h2::after {
+            content: '';
+            display: block;
+            width: 56px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--orange), var(--dark-orange));
+            margin: 12px auto 0;
+            border-radius: 2px;
+        }
+
+        /* ── Stats ── */
+        #stats { background: #fff8ee; }
+        .stats-grid { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; }
+        .stat-card {
+            background: white;
+            border-radius: 18px;
+            padding: 32px 24px;
+            width: 210px;
+            text-align: center;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--orange), var(--dark-orange));
+        }
+        .stat-card .number { font-size: 3rem; font-weight: 900; color: var(--orange); line-height: 1; }
+        .stat-card p { margin-top: 10px; font-size: 0.87rem; color: #666; line-height: 1.55; }
+
+        /* ── Taiwan Focus ── */
+        #taiwan { background: white; }
+        .tw-focus-grid { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; }
+        .tw-city-card {
+            background: white;
+            border: 1px solid #f0e8d8;
+            border-radius: 18px;
+            padding: 28px;
+            width: 310px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .tw-city-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 14px 40px rgba(249,157,38,0.18);
+        }
+        .tw-city-card h3 {
+            font-size: 1.05rem;
+            color: var(--dark-orange);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .city-icon {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--orange), var(--dark-orange));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .progress-item { margin-bottom: 13px; }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .progress-track { background: #f0f0f0; border-radius: 10px; height: 8px; overflow: hidden; }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--orange), var(--dark-orange));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ── Goals ── */
+        #goals { background: #fff8ee; }
+        .goals-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .goal-card {
+            background: white;
+            border-radius: 16px;
+            padding: 26px;
+            width: 260px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            will-change: transform;
+            transition: box-shadow 0.2s;
+            cursor: default;
+        }
+        .goal-card:hover { box-shadow: 0 8px 32px rgba(249,157,38,0.18); }
+        .goal-card h3 { font-size: 1rem; margin-bottom: 10px; color: var(--dark-orange); }
+        .goal-card p { font-size: 0.87rem; color: #555; line-height: 1.6; }
+
+        /* ── Cities table ── */
+        #cities { background: white; }
+        .cities-table {
+            width: 100%;
+            max-width: 920px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        .cities-table th {
+            background: var(--orange);
+            color: white;
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 0.92rem;
+        }
+        .cities-table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 0.9rem;
+            transition: background 0.18s;
+        }
+        .cities-table tbody tr:hover td { background: #fff3e0; }
+        .tw-badge {
+            font-size: 0.7rem;
+            background: var(--orange);
+            color: white;
+            padding: 2px 7px;
+            border-radius: 10px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        /* ── Lookup ── */
+        #lookup { background: #fff8ee; text-align: center; }
+        #lookup > p { margin-bottom: 24px; color: #666; }
+        .lookup-form { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+        .lookup-form select {
+            padding: 12px 20px;
+            font-size: 1rem;
+            border-radius: 10px;
+            border: 2px solid var(--orange);
+            outline: none;
+            background: white;
+            cursor: pointer;
+        }
+        .lookup-form button {
+            padding: 12px 28px;
+            font-size: 1rem;
+            border-radius: 10px;
+            background: var(--orange);
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .lookup-form button:hover { background: var(--dark-orange); transform: scale(1.04); }
+        #city-result {
+            display: none;
+            background: white;
+            border-left: 5px solid var(--orange);
+            padding: 24px 32px;
+            max-width: 520px;
+            margin: 0 auto;
+            border-radius: 14px;
+            text-align: left;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        #city-result h3 { color: var(--dark-orange); margin-bottom: 14px; font-size: 1.2rem; }
+        #city-result p { font-size: 0.92rem; line-height: 1.75; color: #444; margin-bottom: 5px; }
+
+        /* ── Footer ── */
+        footer {
+            background: #0f0c29;
+            color: #888;
+            text-align: center;
+            padding: 48px 40px;
+            font-size: 0.88rem;
+        }
+        .footer-sdg { font-size: 2rem; color: var(--orange); font-weight: 900; margin-bottom: 14px; letter-spacing: 2px; }
+        footer p { line-height: 1.9; }
+
+        /* ── City card clickable hint ── */
+        .tw-city-card { cursor: pointer; }
+        .card-explore {
+            margin-top: 16px;
+            font-size: 0.82rem;
+            color: var(--orange);
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: gap 0.2s;
+        }
+        .tw-city-card:hover .card-explore { gap: 10px; }
+
+        /* ── Scene Modal ── */
+        #scene-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: #000;
+        }
+        #scene-modal.active { display: flex; }
+        #scene-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: opacity 0.55s ease;
+        }
+        #scene-bg.fade-out { opacity: 0; }
+        .scene-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to top,
+                rgba(0,0,0,0.88) 0%,
+                rgba(0,0,0,0.35) 55%,
+                rgba(0,0,0,0.18) 100%
+            );
+        }
+        .scene-top-bar {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 32px;
+            z-index: 10;
+        }
+        .scene-city-label {
+            color: white;
+            font-size: 0.9rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.75;
+        }
+        .scene-close-btn {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: white;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: background 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .scene-close-btn:hover { background: rgba(255,255,255,0.28); }
+        .scene-content {
+            position: absolute;
+            bottom: 90px;
+            left: 64px; right: 64px;
+            color: white;
+            z-index: 10;
+        }
+        .scene-category-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--orange);
+            border: 1px solid rgba(249,157,38,0.5);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(4px);
+            background: rgba(249,157,38,0.08);
+        }
+        .scene-title {
+            font-size: 2.6rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 18px;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+        }
+        .scene-text {
+            font-size: 1.05rem;
+            line-height: 1.85;
+            max-width: 680px;
+            opacity: 0.88;
+            text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+        }
+        .scene-content-wrap {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .scene-content-wrap.fade { opacity: 0; transform: translateY(14px); }
+        .scene-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: white;
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            font-size: 1.4rem;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: background 0.2s, transform 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .scene-nav-btn:hover { background: rgba(255,255,255,0.28); transform: translateY(-50%) scale(1.05); }
+        #scene-prev { left: 24px; }
+        #scene-next { right: 24px; }
+        .scene-dots {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        .scene-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.35);
+            cursor: pointer;
+            transition: background 0.25s, transform 0.25s;
+            border: none;
+            padding: 0;
+        }
+        .scene-dot.active { background: var(--orange); transform: scale(1.4); }
+        .scene-counter {
+            position: absolute;
+            bottom: 44px;
+            right: 32px;
+            color: rgba(255,255,255,0.45);
+            font-size: 0.82rem;
+            z-index: 10;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">SDG 11</div>
+        <div class="nav-right">
+            <ul>
+                <li><a href="#stats"  data-en="Statistics"   data-zh="統計數據">Statistics</a></li>
+                <li><a href="#taiwan" data-en="Taiwan Focus"  data-zh="台灣焦點">Taiwan Focus</a></li>
+                <li><a href="#goals"  data-en="Goals"         data-zh="目標">Goals</a></li>
+                <li><a href="#cities" data-en="Case Studies"  data-zh="城市案例">Case Studies</a></li>
+                <li><a href="#lookup" data-en="City Lookup"   data-zh="城市查詢">City Lookup</a></li>
+            </ul>
+            <button class="lang-btn" onclick="toggleLang()">中文</button>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section id="hero">
+        <canvas id="particle-canvas"></canvas>
+        <div class="hero-content">
+            <div class="sdg-badge">SDG 11</div>
+            <h1>
+                <span data-en="Sustainable Cities" data-zh="永續城市">Sustainable Cities</span><br>
+                <span data-en="and Communities"    data-zh="與社區">and Communities</span>
+            </h1>
+            <p data-en="Make cities inclusive, safe, resilient, and sustainable for everyone on our planet."
+               data-zh="讓城市與人類居住地具有包容性、安全性、韌性與永續性，讓地球上的每個人都能受益。">
+                Make cities inclusive, safe, resilient, and sustainable for everyone on our planet.
+            </p>
+            <div class="hero-btns">
+                <a href="#stats"  class="btn-primary" data-en="Explore Data"   data-zh="探索數據">Explore Data</a>
+                <a href="#taiwan" class="btn-ghost"   data-en="Taiwan Focus"   data-zh="台灣焦點">Taiwan Focus</a>
+            </div>
+            <div class="scroll-arrow">▼</div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section id="stats">
+        <h2 data-en="Key Statistics" data-zh="關鍵數據">Key Statistics</h2>
+        <div class="stats-grid">
+            <div class="stat-card fade-up">
+                <div class="number" data-target="56" data-suffix="%">0%</div>
+                <p data-en="of the world's population lives in cities"  data-zh="全球人口居住於都市">of the world's population lives in cities</p>
+            </div>
+            <div class="stat-card fade-up" style="transition-delay:.1s">
+                <div class="number" data-target="79" data-suffix="%">0%</div>
+                <p data-en="of Taiwan's population is urban"            data-zh="台灣人口居住於都市地區">of Taiwan's population is urban</p>
+            </div>
+            <div class="stat-card fade-up" style="transition-delay:.2s">
+                <div class="number" data-target="55" data-suffix="%">0%</div>
+                <p data-en="Taiwan's world-leading recycling rate"      data-zh="台灣的全球頂尖資源回收率">Taiwan's world-leading recycling rate</p>
+            </div>
+            <div class="stat-card fade-up" style="transition-delay:.3s">
+                <div class="number" data-target="68" data-suffix="%">0%</div>
+                <p data-en="projected global urban population by 2050"  data-zh="預計 2050 年全球都市人口比例">projected global urban population by 2050</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Taiwan Focus -->
+    <section id="taiwan">
+        <h2 data-en="Taiwan City Focus" data-zh="台灣城市焦點">Taiwan City Focus</h2>
+        <div class="tw-focus-grid">
+
+            <div class="tw-city-card fade-up" onclick="openCity('taipei')">
+                <h3><div class="city-icon">北</div><span data-en="Taipei" data-zh="台北">Taipei</span></h3>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Recycling Rate" data-zh="資源回收率">Recycling Rate</span><span>55%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="55"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Solar Energy" data-zh="太陽能普及率">Solar Energy</span><span>40%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="40"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Public Transit" data-zh="大眾運輸使用率">Public Transit</span><span>65%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="65"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Green Coverage" data-zh="綠地覆蓋率">Green Coverage</span><span>35%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="35"></div></div>
+                </div>
+                <div class="card-explore"><span data-en="Explore city →" data-zh="探索城市 →">Explore city →</span></div>
+            </div>
+
+            <div class="tw-city-card fade-up" style="transition-delay:.1s" onclick="openCity('kaohsiung')">
+                <h3><div class="city-icon">雄</div><span data-en="Kaohsiung" data-zh="高雄">Kaohsiung</span></h3>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Recycling Rate" data-zh="資源回收率">Recycling Rate</span><span>48%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="48"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Solar Energy" data-zh="太陽能普及率">Solar Energy</span><span>55%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="55"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Public Transit" data-zh="大眾運輸使用率">Public Transit</span><span>50%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="50"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Green Coverage" data-zh="綠地覆蓋率">Green Coverage</span><span>30%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="30"></div></div>
+                </div>
+                <div class="card-explore"><span data-en="Explore city →" data-zh="探索城市 →">Explore city →</span></div>
+            </div>
+
+            <div class="tw-city-card fade-up" style="transition-delay:.2s" onclick="openCity('taichung')">
+                <h3><div class="city-icon">中</div><span data-en="Taichung" data-zh="台中">Taichung</span></h3>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Recycling Rate" data-zh="資源回收率">Recycling Rate</span><span>50%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="50"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Solar Energy" data-zh="太陽能普及率">Solar Energy</span><span>45%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="45"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Public Transit" data-zh="大眾運輸使用率">Public Transit</span><span>45%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="45"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Green Coverage" data-zh="綠地覆蓋率">Green Coverage</span><span>40%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="40"></div></div>
+                </div>
+                <div class="card-explore"><span data-en="Explore city →" data-zh="探索城市 →">Explore city →</span></div>
+            </div>
+
+            <div class="tw-city-card fade-up" style="transition-delay:.1s" onclick="openCity('tainan')">
+                <h3><div class="city-icon">南</div><span data-en="Tainan" data-zh="台南">Tainan</span></h3>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Recycling Rate" data-zh="資源回收率">Recycling Rate</span><span>52%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="52"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Solar Energy" data-zh="太陽能普及率">Solar Energy</span><span>70%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="70"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Public Transit" data-zh="大眾運輸使用率">Public Transit</span><span>38%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="38"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Green Coverage" data-zh="綠地覆蓋率">Green Coverage</span><span>42%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="42"></div></div>
+                </div>
+                <div class="card-explore"><span data-en="Explore city →" data-zh="探索城市 →">Explore city →</span></div>
+            </div>
+
+            <div class="tw-city-card fade-up" style="transition-delay:.2s" onclick="openCity('hsinchu')">
+                <h3><div class="city-icon">竹</div><span data-en="Hsinchu" data-zh="新竹">Hsinchu</span></h3>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Recycling Rate" data-zh="資源回收率">Recycling Rate</span><span>49%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="49"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Solar Energy" data-zh="太陽能普及率">Solar Energy</span><span>50%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="50"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Public Transit" data-zh="大眾運輸使用率">Public Transit</span><span>42%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="42"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span data-en="Green Coverage" data-zh="綠地覆蓋率">Green Coverage</span><span>33%</span></div>
+                    <div class="progress-track"><div class="progress-fill" data-value="33"></div></div>
+                </div>
+                <div class="card-explore"><span data-en="Explore city →" data-zh="探索城市 →">Explore city →</span></div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Goals -->
+    <section id="goals">
+        <h2 data-en="SDG 11 Targets" data-zh="SDG 11 子目標">SDG 11 Targets</h2>
+        <div class="goals-grid">
+            <div class="goal-card fade-up">
+                <h3 data-en="11.1 — Safe Housing"         data-zh="11.1 — 安全住房">11.1 — Safe Housing</h3>
+                <p  data-en="Ensure access for all to adequate, safe, and affordable housing and basic services."
+                    data-zh="確保所有人都能獲得適當、安全且負擔得起的住房與基本服務。">Ensure access for all to adequate, safe, and affordable housing and basic services.</p>
+            </div>
+            <div class="goal-card fade-up" style="transition-delay:.08s">
+                <h3 data-en="11.2 — Sustainable Transport" data-zh="11.2 — 永續交通">11.2 — Sustainable Transport</h3>
+                <p  data-en="Provide access to safe, affordable, accessible and sustainable transport systems for all."
+                    data-zh="為所有人提供安全、負擔得起、可及且永續的交通系統。">Provide access to safe, affordable, accessible and sustainable transport systems for all.</p>
+            </div>
+            <div class="goal-card fade-up" style="transition-delay:.16s">
+                <h3 data-en="11.3 — Inclusive Urbanization" data-zh="11.3 — 包容性都市化">11.3 — Inclusive Urbanization</h3>
+                <p  data-en="Enhance inclusive and sustainable urbanization and participatory settlement planning."
+                    data-zh="推動包容且永續的都市化，促進參與式的定居地規劃。">Enhance inclusive and sustainable urbanization and participatory settlement planning.</p>
+            </div>
+            <div class="goal-card fade-up" style="transition-delay:.24s">
+                <h3 data-en="11.4 — Cultural Heritage"    data-zh="11.4 — 文化遺產">11.4 — Cultural Heritage</h3>
+                <p  data-en="Strengthen efforts to protect and safeguard the world's cultural and natural heritage."
+                    data-zh="加強保護世界文化與自然遺產的努力。">Strengthen efforts to protect and safeguard the world's cultural and natural heritage.</p>
+            </div>
+            <div class="goal-card fade-up" style="transition-delay:.32s">
+                <h3 data-en="11.5 — Disaster Resilience"  data-zh="11.5 — 防災韌性">11.5 — Disaster Resilience</h3>
+                <p  data-en="Reduce the number of deaths and losses caused by disasters including water-related disasters."
+                    data-zh="減少災害（包括水災）造成的死亡人數與損失。">Reduce the number of deaths and losses caused by disasters including water-related disasters.</p>
+            </div>
+            <div class="goal-card fade-up" style="transition-delay:.4s">
+                <h3 data-en="11.6 — Environmental Impact" data-zh="11.6 — 環境影響">11.6 — Environmental Impact</h3>
+                <p  data-en="Reduce the adverse per capita environmental impact of cities, including air quality and waste management."
+                    data-zh="降低城市的人均環境負面影響，包括空氣品質與廢棄物管理。">Reduce the adverse per capita environmental impact of cities, including air quality and waste management.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Studies -->
+    <section id="cities">
+        <h2 data-en="Sustainable City Case Studies" data-zh="永續城市案例">Sustainable City Case Studies</h2>
+        <table class="cities-table">
+            <thead>
+                <tr>
+                    <th data-en="City"           data-zh="城市">City</th>
+                    <th data-en="Region"          data-zh="地區">Region</th>
+                    <th data-en="Key Initiative"  data-zh="主要措施">Key Initiative</th>
+                    <th data-en="Achievement"     data-zh="成果">Achievement</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="tw-row">
+                    <td>Taipei <span class="tw-badge">TW</span></td>
+                    <td data-en="Taiwan"   data-zh="台灣">Taiwan</td>
+                    <td data-en="Pay-as-you-throw waste policy"          data-zh="垃圾費隨袋徵收">Pay-as-you-throw waste policy</td>
+                    <td data-en="Recycling rate 55%; waste reduced 67%"  data-zh="回收率 55%，垃圾量減少 67%">Recycling rate 55%; waste reduced 67%</td>
+                </tr>
+                <tr class="tw-row">
+                    <td>Kaohsiung <span class="tw-badge">TW</span></td>
+                    <td data-en="Taiwan"   data-zh="台灣">Taiwan</td>
+                    <td data-en="MRT + light rail + YouBike integration"                 data-zh="捷運＋輕軌＋YouBike 整合">MRT + light rail + YouBike integration</td>
+                    <td data-en="First light rail in Taiwan; harbor revitalized"         data-zh="台灣第一條輕軌，港區再生">First light rail in Taiwan; harbor revitalized</td>
+                </tr>
+                <tr class="tw-row">
+                    <td>Taichung <span class="tw-badge">TW</span></td>
+                    <td data-en="Taiwan"   data-zh="台灣">Taiwan</td>
+                    <td data-en="Green corridor & BRT-style transit"                     data-zh="綠廊道與 BRT 式公車">Green corridor & BRT-style transit</td>
+                    <td data-en="Central Park greenway; fastest-growing city in Taiwan"  data-zh="中央公園綠廊；台灣成長最快城市">Central Park greenway; fastest-growing city in Taiwan</td>
+                </tr>
+                <tr class="tw-row">
+                    <td>Tainan <span class="tw-badge">TW</span></td>
+                    <td data-en="Taiwan"   data-zh="台灣">Taiwan</td>
+                    <td data-en="Historic preservation + solar energy"                   data-zh="古都保存與太陽能發電">Historic preservation + solar energy</td>
+                    <td data-en="Largest solar capacity in Taiwan; 400-year heritage"    data-zh="全台太陽能最大，保存四百年古蹟">Largest solar capacity in Taiwan; 400-year heritage</td>
+                </tr>
+                <tr class="tw-row">
+                    <td>Hsinchu <span class="tw-badge">TW</span></td>
+                    <td data-en="Taiwan"   data-zh="台灣">Taiwan</td>
+                    <td data-en="Smart city & IoT infrastructure"                        data-zh="智慧城市與 IoT 基礎建設">Smart city & IoT infrastructure</td>
+                    <td data-en="IoT sensors for traffic & air quality; TSMC green goals" data-zh="IoT 監測交通與空氣；台積電綠能目標">IoT sensors for traffic & air quality; TSMC green goals</td>
+                </tr>
+                <tr>
+                    <td>Copenhagen</td>
+                    <td data-en="Denmark"     data-zh="丹麥">Denmark</td>
+                    <td data-en="Carbon neutral by 2025"      data-zh="2025 年達成碳中和">Carbon neutral by 2025</td>
+                    <td data-en="62% renewable energy; 390 km bike lanes" data-zh="62% 再生能源，390 公里自行車道">62% renewable energy; 390 km bike lanes</td>
+                </tr>
+                <tr>
+                    <td>Singapore</td>
+                    <td data-en="Singapore"   data-zh="新加坡">Singapore</td>
+                    <td data-en="City in a Garden"            data-zh="花園城市計畫">City in a Garden</td>
+                    <td data-en="47% green coverage; 300+ parks" data-zh="47% 綠地覆蓋，300 座以上公園">47% green coverage; 300+ parks</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- City Lookup -->
+    <section id="lookup">
+        <h2 data-en="City Sustainability Lookup" data-zh="城市永續查詢">City Sustainability Lookup</h2>
+        <p data-en="Select a city to learn about its sustainability efforts." data-zh="選擇一個城市，了解其永續發展措施。">Select a city to learn about its sustainability efforts.</p>
+        <div class="lookup-form">
+            <select id="city-select">
+                <option value=""           data-en="-- Select a city --" data-zh="-- 請選擇城市 --">-- Select a city --</option>
+                <option value="taipei"     data-en="Taipei"     data-zh="台北">Taipei</option>
+                <option value="kaohsiung"  data-en="Kaohsiung"  data-zh="高雄">Kaohsiung</option>
+                <option value="taichung"   data-en="Taichung"   data-zh="台中">Taichung</option>
+                <option value="tainan"     data-en="Tainan"     data-zh="台南">Tainan</option>
+                <option value="hsinchu"    data-en="Hsinchu"    data-zh="新竹">Hsinchu</option>
+                <option value="copenhagen" data-en="Copenhagen" data-zh="哥本哈根">Copenhagen</option>
+                <option value="singapore"  data-en="Singapore"  data-zh="新加坡">Singapore</option>
+            </select>
+            <button onclick="lookupCity()" data-en="Search" data-zh="查詢">Search</button>
+        </div>
+        <div id="city-result"></div>
+    </section>
+
+    <!-- Scene Modal -->
+    <div id="scene-modal">
+        <img id="scene-bg" src="" alt="city scene">
+        <div class="scene-overlay"></div>
+        <div class="scene-top-bar">
+            <div class="scene-city-label" id="scene-city-label"></div>
+            <button class="scene-close-btn" onclick="closeScene()">✕</button>
+        </div>
+        <button class="scene-nav-btn" id="scene-prev" onclick="changeScene(-1)">&#8592;</button>
+        <button class="scene-nav-btn" id="scene-next" onclick="changeScene(1)">&#8594;</button>
+        <div class="scene-content">
+            <div class="scene-content-wrap" id="scene-content-wrap">
+                <div class="scene-category-tag" id="scene-cat"></div>
+                <h2 class="scene-title" id="scene-title"></h2>
+                <p class="scene-text" id="scene-text"></p>
+            </div>
+        </div>
+        <div class="scene-dots" id="scene-dots"></div>
+        <div class="scene-counter" id="scene-counter"></div>
+    </div>
+
+    <footer>
+        <div class="footer-sdg">SDG 11</div>
+        <p data-en="Sustainable Cities and Communities | United Nations Sustainable Development Goals"
+           data-zh="永續城市與社區 | 聯合國永續發展目標">
+            Sustainable Cities and Communities | United Nations Sustainable Development Goals
+        </p>
+        <p style="margin-top:8px;" data-en="Data sources: United Nations · World Bank · Taiwan EPA · C40 Cities"
+           data-zh="資料來源：聯合國 · 世界銀行 · 台灣環保署 · C40 城市">
+            Data sources: United Nations · World Bank · Taiwan EPA · C40 Cities
+        </p>
+    </footer>
+
+    <script>
+        /* ── Canvas Particles ── */
+        (function () {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let W, H, particles = [];
+
+            function resize() {
+                W = canvas.width  = canvas.offsetWidth;
+                H = canvas.height = canvas.offsetHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    r: Math.random() * 2 + 1
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, W, H);
+                particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if (p.x < 0 || p.x > W) p.vx *= -1;
+                    if (p.y < 0 || p.y > H) p.vy *= -1;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(249,157,38,0.6)';
+                    ctx.fill();
+                });
+                // connect nearby particles
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = `rgba(249,157,38,${0.25 * (1 - dist / 120)})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+
+        /* ── Scroll animations + counter + progress bars ── */
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const el = entry.target;
+                el.classList.add('visible');
+
+                // counter
+                el.querySelectorAll('.number[data-target]').forEach(num => {
+                    const target = parseInt(num.dataset.target);
+                    const suffix = num.dataset.suffix || '';
+                    let start = null;
+                    function step(ts) {
+                        if (!start) start = ts;
+                        const prog = Math.min((ts - start) / 1400, 1);
+                        const ease = 1 - Math.pow(1 - prog, 3);
+                        num.textContent = Math.floor(ease * target) + suffix;
+                        if (prog < 1) requestAnimationFrame(step);
+                    }
+                    requestAnimationFrame(step);
+                });
+
+                // progress bars
+                el.querySelectorAll('.progress-fill[data-value]').forEach(bar => {
+                    setTimeout(() => { bar.style.width = bar.dataset.value + '%'; }, 200);
+                });
+
+                observer.unobserve(el);
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+        /* ── 3D Tilt on goal cards ── */
+        document.querySelectorAll('.goal-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const r = card.getBoundingClientRect();
+                const x = (e.clientX - r.left) / r.width  - 0.5;
+                const y = (e.clientY - r.top)  / r.height - 0.5;
+                card.style.transform = `perspective(700px) rotateY(${x*14}deg) rotateX(${-y*14}deg) scale(1.04)`;
+            });
+            card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+        });
+
+        /* ── City Lookup ── */
+        const cityData = {
+            taipei:     { name:{en:"Taipei, Taiwan",zh:"台北，台灣"},          transport:{en:"MRT + YouBike 24-hour city-wide system",zh:"捷運與 YouBike 涵蓋全市，全天候服務"},     energy:{en:"Solar incentives; green building regulations",zh:"太陽能獎勵；綠建築規範"},       green:{en:"Recycling rate 55%; strict pay-as-you-throw policy",zh:"資源回收率 55%；垃圾費隨袋徵收"},      highlight:{en:"Waste reduced by 67% since pay-as-you-throw policy",zh:"實施垃圾費隨袋徵收後垃圾量減少 67%"} },
+            kaohsiung:  { name:{en:"Kaohsiung, Taiwan",zh:"高雄，台灣"},        transport:{en:"MRT, light rail, YouBike integrated network",zh:"捷運、輕軌與 YouBike 整合交通網絡"},    energy:{en:"Transitioning from steel/industrial to green hub",zh:"從重工業城市轉型為綠能示範城市"},       green:{en:"Love River and Lotus Pond ecological restoration",zh:"愛河與蓮池潭生態復育計畫"},               highlight:{en:"Taiwan's first light rail system launched 2015",zh:"台灣第一條輕軌系統，2015 年通車"} },
+            taichung:   { name:{en:"Taichung, Taiwan",zh:"台中，台灣"},         transport:{en:"BRT-inspired bus network; YouBike widely available",zh:"BRT 概念公車系統；YouBike 廣泛布建"}, energy:{en:"Solar installations growing on public buildings",zh:"公共建築太陽能裝置持續擴建"},          green:{en:"Central Park greenway, 5.7 km urban green corridor",zh:"中央公園綠廊，5.7 公里都市綠帶"},         highlight:{en:"Population surpassed Taipei; fastest-growing major city",zh:"人口超越台北，台灣成長最快主要城市"} },
+            tainan:     { name:{en:"Tainan, Taiwan",zh:"台南，台灣"},           transport:{en:"Cycling-friendly; bike lanes near historic districts",zh:"自行車友善城市，歷史區專用車道"},    energy:{en:"Highest solar panel capacity in all of Taiwan",zh:"台灣太陽能裝置容量最大城市"},              green:{en:"400-year heritage buildings preserved amid development",zh:"四百年歷史古蹟與現代建設共存"},         highlight:{en:"Taiwan's cultural capital — SDG 11 heritage + sustainability",zh:"台灣文化首都，文資保存與永續發展並重"} },
+            hsinchu:    { name:{en:"Hsinchu, Taiwan",zh:"新竹，台灣"},          transport:{en:"Smart traffic management using IoT sensors",zh:"IoT 感測器智慧交通管理"},                  energy:{en:"Tech park companies adopting RE100 green energy targets",zh:"科學園區企業採用 RE100 綠能目標"},    green:{en:"Real-time air quality monitoring across the city",zh:"全市即時空氣品質監測"},                    highlight:{en:"TSMC & tech giants driving smart city and green energy innovation",zh:"台積電與科技巨頭推動智慧城市與綠能創新"} },
+            copenhagen: { name:{en:"Copenhagen, Denmark",zh:"哥本哈根，丹麥"},  transport:{en:"390 km bike lanes; 62% of commutes by bicycle",zh:"390 公里自行車道，62% 通勤騎車"},       energy:{en:"62% renewable; aiming carbon neutral by 2025",zh:"62% 再生能源，目標 2025 碳中和"},          green:{en:"Parks within 300 m of every resident",zh:"每位居民 300 公尺內皆有公園"},                         highlight:{en:"World's first city to target carbon neutrality",zh:"全球第一個以碳中和為目標的城市"} },
+            singapore:  { name:{en:"Singapore",zh:"新加坡"},                   transport:{en:"MRT + bus covering 99% of the island",zh:"捷運與公車涵蓋全島 99%"},                        energy:{en:"Solar on 50% of public housing rooftops by 2030",zh:"2030 年前 50% 公共住宅屋頂裝設太陽能"}, green:{en:"47% green coverage; 300+ parks",zh:"47% 綠地覆蓋，300 座以上公園"},                             highlight:{en:"City in a Garden — urban greening masterplan since 1967",zh:"花園城市計畫，自 1967 年推動至今"} },
+        };
+
+        let currentLang = 'en';
+
+        function lookupCity() {
+            const key = document.getElementById('city-select').value;
+            const result = document.getElementById('city-result');
+            if (!key) { result.style.display = 'none'; return; }
+            const c = cityData[key], l = currentLang;
+            const lab = { transport:{en:'Transport',zh:'交通'}, energy:{en:'Energy',zh:'能源'}, green:{en:'Environment',zh:'環境'}, highlight:{en:'Highlight',zh:'亮點'} };
+            result.style.display = 'none';
+            result.innerHTML = `
+                <h3>${c.name[l]}</h3>
+                <p><strong>${lab.transport[l]}:</strong> ${c.transport[l]}</p>
+                <p><strong>${lab.energy[l]}:</strong> ${c.energy[l]}</p>
+                <p><strong>${lab.green[l]}:</strong> ${c.green[l]}</p>
+                <p><strong>${lab.highlight[l]}:</strong> ${c.highlight[l]}</p>
+            `;
+            // re-trigger animation
+            requestAnimationFrame(() => { result.style.display = 'block'; });
+        }
+
+        /* ── Scene Modal ── */
+        const sceneData = {
+            taipei: [
+                {
+                    category: { en: 'Overview', zh: '城市概覽' },
+                    title:    { en: 'Welcome to Taipei', zh: '歡迎來到台北' },
+                    text:     { en: 'You gaze up at the glittering Taipei 101, once the world\'s tallest building. Around you, a city of 2.7 million hums with energy — ancient temples standing shoulder to shoulder with glass skyscrapers, and sustainability woven into the rhythm of daily life.', zh: '你抬頭望向閃耀的台北 101，曾是世界最高建築。周遭，270 萬人的城市充滿活力——古廟與玻璃大樓比鄰而立，永續發展已融入每日生活節奏。' },
+                    photo:    'https://images.unsplash.com/photo-1470004914212-05527e49370b?w=1400&q=80&auto=format&fit=crop'
+                },
+                {
+                    category: { en: 'Transport', zh: '交通' },
+                    title:    { en: 'MRT & YouBike', zh: '捷運與 YouBike' },
+                    text:     { en: 'You swipe your EasyCard and step into a spotless metro station. Taipei\'s MRT carries over 2 million passengers daily. Outside every exit, rows of orange YouBikes await — a seamless last-mile connection that has made car ownership feel unnecessary.', zh: '你刷悠遊卡踏入乾淨的捷運站。台北捷運每日載運逾 200 萬人次。每個出口外，橘色 YouBike 排列等候——無縫的最後一哩路，讓擁有汽車變得不再必要。' },
+                    photo:    'https://images.unsplash.com/photo-1568901640786-9eefd3ba05e5?w=1400&q=80&auto=format&fit=crop'
+                },
+                {
+                    category: { en: 'Environment', zh: '環境' },
+                    title:    { en: 'The Recycling Revolution', zh: '資源回收革命' },
+                    text:     { en: 'The garbage truck plays Für Elise — your cue to grab the sorted bags. Taipei\'s pay-as-you-throw policy transformed trash habits overnight. The city recycles over 55% of its waste, with household garbage reduced by 67% since 2000.', zh: '垃圾車播放《給愛麗絲》——這是你拿著分類垃圾袋的信號。台北的垃圾費隨袋徵收政策一夕改變丟垃圾的習慣。回收率超過 55%，自 2000 年以來家戶垃圾量減少了 67%。' },
+                    photo:    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=1400&q=80&auto=format&fit=crop'
+                },
+                {
+                    category: { en: 'Community', zh: '社區生活' },
+                    title:    { en: 'Night Market Culture', zh: '夜市文化' },
+                    text:     { en: 'Under a canopy of red lanterns, Shilin Night Market comes alive. Street vendors offer scallion pancakes, stinky tofu, and bubble tea. This is the heartbeat of Taipei\'s community life — vibrant, inclusive, and deeply human.', zh: '紅燈籠下，士林夜市活了起來。攤販提供蔥油餅、臭豆腐與珍珠奶茶。這是台北社區生活的心跳——充滿活力、包容且充滿人情味。' },
+                    photo:    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1400&q=80&auto=format&fit=crop'
+                }
+            ],
+            kaohsiung: [
+                {
+                    category: { en: 'Overview', zh: '城市概覽' },
+                    title:    { en: 'Welcome to Kaohsiung', zh: '歡迎來到高雄' },
+                    text:     { en: 'Once Taiwan\'s heavy industrial heartland, Kaohsiung is reinventing itself. The harbor that powered Taiwan\'s economic miracle is transforming into a vibrant waterfront, and the city is pioneering green transit and renewable energy in southern Taiwan.', zh: '高雄曾是台灣重工業重鎮，如今正在重塑自己。推動台灣經濟奇蹟的港口正轉型為活躍的海岸線，城市在南台灣引領綠色交通與再生能源。' },
+                    photo:    'https://images.unsplash.com/photo-1480714378714-ef79b7f5ada4?w=1400&q=80&auto=format&fit=crop'
+                },
+                {
+                    category: { en: 'Transport', zh: '交通' },
+                    title:    { en: 'Light Rail Along the Harbor', zh: '港邊輕軌' },
+                    text:     { en: 'You board the circular light rail as it curves along the harbor front. In 2015, Kaohsiung became the first city in Taiwan to operate a modern light rail — connecting the port district to cultural venues, parks, and the MRT network.', zh: '你登上沿著港灣延伸的環狀輕軌。2015 年，高雄成為台灣第一個啟用現代輕軌的城市——連接港區、文化場所、公園與捷運網絡。' },
+                    photo:    'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1400&q=80&auto=format&fit=crop'
+                },
+                {
+                    category: { en: 'Waterfront', zh: '水岸再生' },
+                    title:    { en: 'Love River Reborn', zh: '愛河重生' },
+                    text:     { en: 'You stroll along the banks of the Love River as the sun sets. Once heavily polluted, the river was restored through a 20-year ecological project. Today it is a beloved promenade lined with cafes, art installations, and evening markets.', zh: '你在夕陽中沿愛河散步，高雄天際線盡收眼底。曾嚴重污染的河流歷經 20 年生態復育計畫。如今成為深受喜愛的散步道，兩岸有咖啡館、裝置藝術與夜間市集。' },
+                    photo:    'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1400&q=80&auto=format&fit=crop'
+                },
+                {
+                    category: { en: 'Energy', zh: '能源轉型' },
+                    title:    { en: 'From Steel to Solar', zh: '從鋼鐵到太陽能' },
+                    text:     { en: 'The old factory smokestacks have given way to solar panel arrays. Kaohsiung leads southern Taiwan in renewable energy adoption, with solar installations on industrial rooftops and government buildings transforming the city\'s energy future.', zh: '舊工廠的煙囪已讓位給太陽能板陣列。高雄引領南台灣再生能源採用，工業廠房與政府建築的太陽能裝置正在轉變城市的能源未來。' },
+                    photo:    'https://images.unsplash.com/photo-1509391366360-9ad878fdfd78?w=1400&q=80&auto=format&fit=crop'
+                }
+            ],
+            taichung: [
+                {
+                    category: { en: 'Overview', zh: '城市概覽' },
+                    title:    { en: 'Welcome to Taichung', zh: '歡迎來到台中' },
+                    text:     { en: 'Taiwan\'s fastest-growing city has surpassed Taipei in population and is racing toward a greener future. Sitting in central Taiwan, it bridges north and south — a cultural hub, a food paradise, and an emerging smart city.', zh: '台灣成長最快的城市，人口已超越台北，正快速朝向更綠色的未來前進。位於台灣中部，串聯南北——文化重鎮、美食天堂與新興智慧城市。' },
+                    photo:    'https://images.unsplash.com/photo-1480714378714-ef79b7f5ada4?w=1400&q=80&auto=format&fit=crop&crop=left'
+                },
+                {
+                    category: { en: 'Green Space', zh: '綠色空間' },
+                    title:    { en: 'Central Park Greenway', zh: '中央公園綠廊' },
+                    text:     { en: 'You walk down a 5.7-kilometer green corridor cutting through the heart of the city. Taichung\'s Central Park greenway is a living lung — shaded walking paths, cycling lanes, water features, and pocket parks woven into the urban fabric.', zh: '你走在一條穿越城市心臟的 5.7 公里綠廊。台中中央公園綠廊是城市之肺——遮蔭步道、自行車道、水景與口袋公園交織於都市結構之中。' },
+                    photo:    'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1400&q=80&auto=format&fit=crop&crop=bottom'
+                },
+                {
+                    category: { en: 'Culture', zh: '文化' },
+                    title:    { en: 'Architecture Meets Nature', zh: '建築與自然交融' },
+                    text:     { en: 'The sweeping white curves of the National Taichung Theater — designed by Toyo Ito — emerge from a plaza of trees and water. Taichung has invested in world-class cultural architecture that harmonizes with sustainable urban design.', zh: '伊東豊雄設計的台中國家歌劇院白色弧線從樹木與水景廣場中浮現。台中大力投資世界級文化建築，與永續都市設計和諧共存。' },
+                    photo:    'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=1400&q=80&auto=format&fit=crop'
+                },
+                {
+                    category: { en: 'Transport', zh: '交通' },
+                    title:    { en: 'Smart Bus & Cycling City', zh: '智慧公車與自行車城市' },
+                    text:     { en: 'Real-time displays at every bus stop show arrival times to the minute. Taichung\'s BRT-inspired transit corridors move thousands daily, while an expanding YouBike network nudges residents away from scooters and toward cleaner mobility.', zh: '每個公車站的即時看板精確顯示到站時間。台中 BRT 式交通走廊每日載運大量乘客，擴建中的 YouBike 網絡正引導居民離開機車、轉向更乾淨的移動方式。' },
+                    photo:    'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1400&q=80&auto=format&fit=crop'
+                }
+            ],
+            tainan: [
+                {
+                    category: { en: 'Overview', zh: '城市概覽' },
+                    title:    { en: 'Welcome to Tainan', zh: '歡迎來到台南' },
+                    text:     { en: 'Taiwan\'s oldest city breathes history with every cobblestone. Founded over 400 years ago as the island\'s first capital, Tainan is where Dutch forts, Qing dynasty temples, and Japanese colonial buildings coexist with solar farms and modern sustainability.', zh: '台灣最古老的城市，每一塊鵝卵石都呼吸著歷史。四百多年前作為全島第一個首府建立，台南融合荷蘭古堡、清朝廟宇、日式殖民建築與太陽能農場和現代永續計畫。' },
+                    photo:    'https://images.unsplash.com/photo-1470004914212-05527e49370b?w=1400&q=80&auto=format&fit=crop&crop=right'
+                },
+                {
+                    category: { en: 'Solar Energy', zh: '太陽能' },
+                    title:    { en: 'Sun Capital of Taiwan', zh: '台灣太陽能首都' },
+                    text:     { en: 'Tainan basks in more sunlight than any other major city in Taiwan. Expansive solar farms have been installed on agricultural land, factory rooftops, and even above fish ponds — giving Tainan the highest solar panel capacity in all of Taiwan.', zh: '台南享有比其他主要城市更充裕的日照。太陽能農場遍布農業用地、工廠屋頂，甚至漁塭上方——使台南擁有全台最高的太陽能裝置容量。' },
+                    photo:    'https://images.unsplash.com/photo-1509391366360-9ad878fdfd78?w=1400&q=80&auto=format&fit=crop&crop=top'
+                },
+                {
+                    category: { en: 'Heritage', zh: '文化遺產' },
+                    title:    { en: 'Living History', zh: '活著的歷史' },
+                    text:     { en: 'You walk through the red gate of Chihkan Tower, built by the Dutch in 1653. Tainan\'s old streets are a living museum — historic lanes filled with century-old temples, traditional snack vendors, and restored Japanese shophouses, all preserved for future generations.', zh: '你穿過 1653 年荷蘭人建造的赤崁樓紅色城門。台南老街是活著的博物館——歷史小巷充滿百年廟宇、傳統小吃攤與修復的日式商店，全為後代子孫精心保存。' },
+                    photo:    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80&auto=format&fit=crop'
+                },
+                {
+                    category: { en: 'Cycling', zh: '自行車' },
+                    title:    { en: 'Riding Through History', zh: '騎車穿越歷史' },
+                    text:     { en: 'A YouBike carries you through narrow historic lanes too small for cars. Tainan\'s cycling infrastructure weaves between ancient temples and colonial-era buildings. The city\'s flat terrain and warm climate make cycling a natural choice.', zh: 'YouBike 帶你穿越窄小的歷史巷弄，那裡容不下汽車。台南的自行車基礎設施穿梭於古廟與殖民時期建築之間。平坦地形與溫暖氣候使騎車成為自然選擇。' },
+                    photo:    'https://images.unsplash.com/photo-1488739620652-da7f6f22bae4?w=1400&q=80&auto=format&fit=crop'
+                }
+            ],
+            hsinchu: [
+                {
+                    category: { en: 'Overview', zh: '城市概覽' },
+                    title:    { en: 'Welcome to Hsinchu', zh: '歡迎來到新竹' },
+                    text:     { en: 'Known as the "windy city" — and now for its technological innovation. Hsinchu Science Park is home to TSMC, MediaTek, and hundreds of tech companies that have made it Taiwan\'s Silicon Valley, now turning engineering prowess toward sustainability.', zh: '新竹以持久的強風聞名，如今更以科技創新著稱。新竹科學園區匯集台積電、聯發科與數百家科技公司，成為台灣矽谷，如今正將工程實力轉向永續發展。' },
+                    photo:    'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&q=80&auto=format&fit=crop'
+                },
+                {
+                    category: { en: 'Smart City', zh: '智慧城市' },
+                    title:    { en: 'IoT Meets Urban Life', zh: '物聯網融入城市生活' },
+                    text:     { en: 'Sensors embedded in lampposts, intersections, and public spaces feed real-time data to Hsinchu\'s city management center. Traffic signals adapt dynamically, air quality alerts reach residents\' phones, and energy across public buildings is optimized automatically.', zh: '嵌入路燈、路口與公共空間的感測器將即時數據傳送至新竹市政管理中心。交通號誌動態調整，空氣品質警示推播至市民手機，公共建築能源自動優化。' },
+                    photo:    'https://images.unsplash.com/photo-1480714378714-ef79b7f5ada4?w=1400&q=80&auto=format&fit=crop&crop=top'
+                },
+                {
+                    category: { en: 'Green Energy', zh: '綠色能源' },
+                    title:    { en: 'Tech Companies Go Green', zh: '科技公司走向綠能' },
+                    text:     { en: 'TSMC has committed to 100% renewable energy by 2050, driving massive solar and wind investments in the Hsinchu region. The tech park\'s voracious energy appetite is being reshaped — chip fabs powered by offshore wind turbines and rooftop solar.', zh: '台積電承諾 2050 年達成 100% 再生能源，推動新竹地區大規模太陽能與風能投資。科技園區龐大的能源需求正在重塑——晶圓廠由離岸風機與屋頂太陽能供電。' },
+                    photo:    'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=1400&q=80&auto=format&fit=crop'
+                },
+                {
+                    category: { en: 'Heritage', zh: '古城魅力' },
+                    title:    { en: 'The Old City Walls', zh: '古城牆' },
+                    text:     { en: 'Beyond the glass towers of the science park, the ancient city walls of Hsinchu still stand. Built in 1827, the East Gate and old city are a counterpoint to the relentless modernity next door — a reminder that sustainable communities honor their past.', zh: '科學園區的玻璃大樓之外，新竹古城牆依然屹立。建於 1827 年的東門與周邊舊城是緊鄰現代化的對比——提醒我們永續社區應尊重自己的過去。' },
+                    photo:    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=1400&q=80&auto=format&fit=crop&crop=right'
+                }
+            ]
+        };
+
+        let currentCity = null;
+        let currentScene = 0;
+
+        function openCity(key) {
+            currentCity = key;
+            currentScene = 0;
+            document.getElementById('scene-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            renderScene();
+        }
+
+        function closeScene() {
+            document.getElementById('scene-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function changeScene(dir) {
+            const scenes = sceneData[currentCity];
+            const wrap = document.getElementById('scene-content-wrap');
+            wrap.classList.add('fade');
+            const bg = document.getElementById('scene-bg');
+            bg.classList.add('fade-out');
+            setTimeout(() => {
+                currentScene = (currentScene + dir + scenes.length) % scenes.length;
+                renderScene();
+                wrap.classList.remove('fade');
+                bg.classList.remove('fade-out');
+            }, 380);
+        }
+
+        function goToScene(i) {
+            if (i === currentScene) return;
+            const wrap = document.getElementById('scene-content-wrap');
+            wrap.classList.add('fade');
+            document.getElementById('scene-bg').classList.add('fade-out');
+            setTimeout(() => {
+                currentScene = i;
+                renderScene();
+                wrap.classList.remove('fade');
+                document.getElementById('scene-bg').classList.remove('fade-out');
+            }, 380);
+        }
+
+        function renderScene() {
+            const l = currentLang;
+            const scene = sceneData[currentCity][currentScene];
+            const scenes = sceneData[currentCity];
+            const cityNames = {
+                taipei: { en: 'TAIPEI', zh: '台北' },
+                kaohsiung: { en: 'KAOHSIUNG', zh: '高雄' },
+                taichung: { en: 'TAICHUNG', zh: '台中' },
+                tainan: { en: 'TAINAN', zh: '台南' },
+                hsinchu: { en: 'HSINCHU', zh: '新竹' }
+            };
+            document.getElementById('scene-bg').src = scene.photo;
+            document.getElementById('scene-city-label').textContent = cityNames[currentCity][l];
+            document.getElementById('scene-cat').textContent = scene.category[l];
+            document.getElementById('scene-title').textContent = scene.title[l];
+            document.getElementById('scene-text').textContent = scene.text[l];
+            document.getElementById('scene-counter').textContent = `${currentScene + 1} / ${scenes.length}`;
+            // dots
+            const dotsEl = document.getElementById('scene-dots');
+            dotsEl.innerHTML = '';
+            scenes.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'scene-dot' + (i === currentScene ? ' active' : '');
+                dot.onclick = () => goToScene(i);
+                dotsEl.appendChild(dot);
+            });
+        }
+
+        // Close on backdrop click (outside content area)
+        document.getElementById('scene-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeScene();
+        });
+
+        // Keyboard nav
+        document.addEventListener('keydown', e => {
+            if (!document.getElementById('scene-modal').classList.contains('active')) return;
+            if (e.key === 'ArrowRight') changeScene(1);
+            if (e.key === 'ArrowLeft')  changeScene(-1);
+            if (e.key === 'Escape')     closeScene();
+        });
+
+        /* ── Language Toggle ── */
+        function toggleLang() {
+            currentLang = currentLang === 'en' ? 'zh' : 'en';
+            document.querySelector('.lang-btn').textContent = currentLang === 'en' ? '中文' : 'English';
+            document.querySelectorAll('[data-en]').forEach(el => {
+                el.textContent = el.dataset[currentLang];
+            });
+            const result = document.getElementById('city-result');
+            if (result.style.display !== 'none') lookupCity();
+        }
+    </script>
+
+</body>
+</html>
