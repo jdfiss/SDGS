@@ -159,3 +159,59 @@ GitHub 已不支援帳號密碼登入，需要用 Personal Access Token（PAT）
 **Q：不想裝 Git，可以直接在網頁上傳嗎？**
 
 可以。進入 https://github.com/jdfiss/SDGS → 點進你的資料夾 → `Add file` → `Upload files`，直接拖檔案上去。
+
+---
+
+## 常見問題 FAQ（進階）
+
+**Q：clone 時出現 `fatal: destination path 'SDGS' already exists`？**
+
+表示你之前已經 clone 過了，資料夾已經存在。不需要重新 clone，直接進去用就好：
+
+```bash
+cd SDGS
+git pull
+```
+
+**Q：怎麼知道我的 SDGS 資料夾連的是哪個 GitHub repo？**
+
+進入資料夾後執行：
+
+```bash
+git remote -v
+```
+
+會顯示像這樣的結果：
+
+```
+origin  https://github.com/帳號/SDGS.git (fetch)
+origin  https://github.com/帳號/SDGS.git (push)
+```
+
+看網址裡的帳號名稱就知道連的是誰的 repo。
+
+**Q：我有兩個 SDGS 資料夾（一個舊的、一個新的），搞混了怎麼辦？**
+
+先確認舊的是哪個 repo，如果不需要了可以刪掉重 clone：
+
+```bash
+cd C:\Users\你的帳號
+rmdir /s /q SDGS
+git clone https://github.com/Goldaniga1/SDGS.git SDGS
+cd SDGS
+git remote -v
+```
+
+最後確認顯示的是你自己的 repo 網址。
+
+**Q：如果要 clone 兩個不同的 repo 但名字一樣，怎麼辦？**
+
+在指令後面加上你想要的資料夾名稱：
+
+```bash
+git clone https://github.com/帳號A/SDGS.git SDGS-A
+git clone https://github.com/帳號B/SDGS.git SDGS-B
+```
+
+這樣兩個就會分開存，不會衝突。
+
